@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,8 +10,9 @@ namespace Squirrel.Github.Boilerplate.Console
     {
         private static void Main()
         {
-            UpdateApp().Wait();
-
+            UpdateApp().ContinueWith(t => System.Console.Error.WriteLine(t.Exception),
+                TaskContinuationOptions.OnlyOnFaulted);
+            
             DisplayCurrentVersion();
             System.Console.ReadKey();
         }
@@ -37,7 +37,8 @@ namespace Squirrel.Github.Boilerplate.Console
 
             var updated = false;
 
-            using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/matthiaslischka/SquirrelGithubBoilerplate").Result)
+            using (var mgr = UpdateManager
+                .GitHubUpdateManager("https://github.com/matthiaslischka/SquirrelGithubBoilerplate").Result)
             {
                 var updateInfo = await mgr.CheckForUpdate();
                 if (updateInfo.ReleasesToApply.Any())
