@@ -13,7 +13,7 @@ namespace Squirrel.Github.Boilerplate.Console
 
         private static void Main()
         {
-            UpdateApp().ContinueWith(t => System.Console.Error.WriteLine(t.Exception),
+            EnsureAppUpToDate().ContinueWith(t => System.Console.Error.WriteLine(t.Exception),
                 TaskContinuationOptions.OnlyOnFaulted);
             
             DisplayCurrentVersion();
@@ -30,7 +30,7 @@ namespace Squirrel.Github.Boilerplate.Console
             System.Console.WriteLine(version);
         }
 
-        private static async Task UpdateApp()
+        private static async Task EnsureAppUpToDate()
         {
             var assembly = Assembly.GetEntryAssembly();
             var updateDotExe = Path.Combine(Path.GetDirectoryName(assembly.Location), "..", "Update.exe");
