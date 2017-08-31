@@ -2,12 +2,15 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Squirrel.Github.Boilerplate.Console
 {
     internal class Program
     {
+        public static ManualResetEvent UpdateCheckResetEvent = new ManualResetEvent(false);
+
         private static void Main()
         {
             UpdateApp().ContinueWith(t => System.Console.Error.WriteLine(t.Exception),
@@ -15,6 +18,8 @@ namespace Squirrel.Github.Boilerplate.Console
             
             DisplayCurrentVersion();
             System.Console.ReadKey();
+
+            UpdateCheckResetEvent.WaitOne();
         }
 
         private static void DisplayCurrentVersion()
@@ -55,6 +60,8 @@ namespace Squirrel.Github.Boilerplate.Console
                 System.Console.Out.WriteLine("Restarting to launch new Version.");
                 UpdateManager.RestartApp();
             }
+
+            UpdateCheckResetEvent.Set();
         }
     }
 }
